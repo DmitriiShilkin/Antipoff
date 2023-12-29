@@ -1,0 +1,32 @@
+{% extends 'default.html' %}
+
+{% block title %}
+	Main
+{% endblock title %}
+
+{% block content %}
+    <h3>Тестовое задание.
+        <a href="https://t.me/shilkinde">Шилкин Дмитрий</a>
+    </h3>
+	<hr>
+    <ol class="inline-list" style="list-style: none; text-align: left;">
+        <li>
+            <a href="/api/v1">Service API</a>
+        </li>
+        <li>
+            <a href="/admin">Админка</a>
+        </li>
+        <li>
+            <a href="{% url 'schema-swagger-ui' %}">Документация Swagger</a>
+        </li>
+        <li>
+            <a href="{% url 'schema-redoc' %}">Документация Redoc</a>
+        </li>
+        <li>
+            <a href="{% url 'ping' %}">Проверка сервера</a>
+        </li>
+        <li>
+            <a href="https://hub.docker.com/repository/docker/dmitriishilkin/antipoff/general">Образ Docker с приложением</a>
+        </li>
+    </ol>
+{% endblock content %}
