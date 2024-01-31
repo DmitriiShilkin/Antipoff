@@ -19,15 +19,18 @@
 
 ### Отчет о тестировании
 ```
-Found 5 test(s).
+Found 6 test(s).
 Creating test database for alias 'default'...
 System check identified no issues (0 silenced).
-.....
+......
 ----------------------------------------------------------------------
-Ran 5 tests in 0.031s
+Ran 6 tests in 0.266s
 
 OK
+Destroying test database for alias 'default'...
 ```
+PS: тесты запускать при работающем приложении во втором терминале,
+т.к. нужен работающий эмулятор удаленного сервера.
 
 ### Образ Docker с приложением
 https://hub.docker.com/repository/docker/dmitriishilkin/antipoff/general

@@ -21,7 +21,7 @@ from rest_framework import routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
-from service.views import QueryViewSet, ResultViewSet, HistoryViewSet, PingView, index_view
+from service.views import QueryViewSet, ResultViewSet, HistoryViewSet, PingView, index_view, ExternalServerEmulatorView
 
 router = routers.DefaultRouter()
 
@@ -46,6 +46,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
     path('api/v1/', include(router.urls)),
+    path('api/v1/emulate-external-server/', ExternalServerEmulatorView.as_view(), name='emulate-external-server'),
     path('api/v1/ping/', PingView.as_view(), name='ping'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     re_path(r'^swagger?(\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
