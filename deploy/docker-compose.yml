@@ -4,6 +4,7 @@ services:
 
   server:
     image: nginx:alpine
+    container_name: antipoff-server
     restart: always
     depends_on:
       - web
@@ -17,6 +18,7 @@ services:
 
   web:
     image: dmitriishilkin/antipoff:latest
+    container_name: antipoff-web
     command: bash -c "/app/run.sh"
     restart: always
     env_file:
