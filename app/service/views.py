@@ -1,7 +1,8 @@
+import asyncio
 import sys
 import time
-import requests
 import random
+import aiohttp
 
 from django.conf import settings
 from django.shortcuts import render
@@ -15,6 +16,17 @@ from .models import Query, Result
 from .serializers import QuerySerializer, ResultSerializer
 
 
+# Корутина перенаправления запроса на внешний сервер
+async def send_to_server(url, data):
+    async with aiohttp.ClientSession() as session:
+        # Здесь происходит отправка запроса на внешний сервер
+        async with session.post(url, data=data) as response:
+            # Здесь происходит получение ответа от внешнего сервера
+            result = await response.json()
+
+    return result.get('result')
+
+
 # Представление для эмулятора внешнего сервера
 class ExternalServerEmulatorView(APIView):
 
@@ -25,7 +37,7 @@ class ExternalServerEmulatorView(APIView):
         serializer = QuerySerializer(data=request.data, context=serializer_context)
 
         # эмуляция обработки запроса внешним сервером
-        time.sleep(60)
+        time.sleep(random.randint(0, 60))
         result = random.choice([True, False])
 
         if serializer.is_valid():
@@ -69,23 +81,24 @@ class ExternalServerEmulatorView(APIView):
 
 
 # Представление для обработки запросов пользователя
-class QueryViewSet(mixins.CreateModelMixin,
+class QueryViewSet(mixins.ListModelMixin,
+                   mixins.CreateModelMixin,
                    viewsets.GenericViewSet):
     serializer_class = QuerySerializer
+    queryset = Query.objects.none()
 
     def create(self, request, *args, **kwargs):
-
-        # Здесь эмулируется отправка запроса на внешний сервер
-        response = requests.post(
-            url='http://localhost:8000' + reverse_lazy('emulate-external-server'),
-            data={
+        url = 'http://localhost:8000' + reverse_lazy('emulate-external-server')
+        data = {
                 'kadastr_number': request.data.get('kadastr_number'),
                 'latitude': request.data.get('latitude'),
                 'longitude': request.data.get('longitude')
-            }
+        }
+        # Здесь эмулируется отправка запроса на внешний сервер и получение от него ответа
+        result = asyncio.run(
+            send_to_server(url=url, data=data)
         )
-        # Здесь эмулируется получение ответа от внешнего сервера
-        result = response.json().get('result')
+
         return Response(
             {
                 'result': result
